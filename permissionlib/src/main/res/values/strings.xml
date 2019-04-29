@@ -1,0 +1,7 @@
+<resources>
+	<string name="app_name">PermissionLib</string>
+
+
+	<string name="dialog_cancel">取消</string>
+	<string name="dialog_comfirm">确定</string>
+</resources>
