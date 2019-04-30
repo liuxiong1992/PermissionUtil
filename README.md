@@ -18,7 +18,7 @@ project的build.gradle
 app的build.gradle
 
 	dependencies {
-	        implementation 'com.github.liuxiong1992:PermissionUtil:1.0'
+			implementation 'com.github.liuxiong1992:PermissionUtil:1.1'
 	}
 
 
