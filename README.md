@@ -1,10 +1,10 @@
 # PermissionUtil
 
-###android 权限申请工具类库
+###1、android 权限申请工具类库
 
  android 权限申请的回调在activity里面，在本类库中，为了方便在fragment等其他需要权限的地方申请和处理回调，在每次申请时，都会启动一个透明的activity，并在透明activity里面申请权限和处理回调，然后在透明activity任务完成后finish掉。
 
-###gradle 配置 
+###2、gradle 配置 
 	
 project的build.gradle
 
@@ -22,7 +22,7 @@ app的build.gradle
 	}
 
 
-###使用方式一：单独处理失败回调
+###3、使用方式一：单独处理失败回调
 
 	//要申请的权限
 	final String[] permission= new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -109,7 +109,7 @@ app的build.gradle
         }
     });
 
-###使用方式二：统一处理失败回调
+###4、使用方式二：统一处理失败回调
 
 在权限申请前设置统一回调，比如application里面
 
@@ -194,9 +194,9 @@ app的build.gradle
             });
 	}
 
-###版本更新说明
+###5、版本更新说明
 
-#####v1.1
+#####1、version 1.1
 
 弃用PermissionUtil类的requestAgain(Context context,String[] permissions,PermissionCallback callback)方法，用requestAgain(Context context,PermissionCallback callback)替代，以方便同意处理回调结果时方便调用。
     
