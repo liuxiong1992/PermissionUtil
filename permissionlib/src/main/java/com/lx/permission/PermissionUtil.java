@@ -13,15 +13,19 @@ import android.util.Log;
  * 类说明：权限工具类
  * create by liuxiong at 2019/4/28 0028 20:35.
  */
-public class PermissionUtil {
+public class  PermissionUtil {
     private static String TAG="----"+PermissionUtil.class.getSimpleName();
     private static FailedCallBack failedCallBack;
+
+    private static  String[] permissions;
 
     /** 方法说明：申请权限
      *  @param context 应用上下文
      *  create by liuxiong at 2019/4/28 0028 20:40
      */
     public static void request(Context context, String[] permissions, final PermissionCallback callback){
+        PermissionUtil.permissions=permissions;
+
         PermissionCallback callback02 = checkArguments(context, permissions, callback);
         
         PermissionActivity.request(context.getApplicationContext(), permissions, callback02==null
@@ -32,7 +36,19 @@ public class PermissionUtil {
      *  @param context 应用上下文
      *  create by liuxiong at 2019/4/28 0028 20:40
      */
-    public static void requestAgain(Context context, String[] permissions, PermissionCallback callback){
+    public static void requestAgain(Context context,PermissionCallback callback){
+        //检验参数
+        PermissionCallback callback02 = checkArguments(context, permissions, callback);
+        //启动一个activity申请权限
+        PermissionActivity.request(context.getApplicationContext(), permissions, callback02==null
+                ?callback:callback02,true);
+    }
+    /** 方法说明：用户说明后重新申请
+     *  @param context 应用上下文
+     *  create by liuxiong at 2019/4/28 0028 20:40
+     */
+    @Deprecated
+    public static void requestAgain(Context context, String[] permissions,PermissionCallback callback){
         //检验参数
         PermissionCallback callback02 = checkArguments(context, permissions, callback);
         //启动一个activity申请权限
@@ -99,14 +115,15 @@ public class PermissionUtil {
         PermissionUtil.failedCallBack = failedCallBack;
     }
 
-    /** 方法说明：弹出一个dialog
+    /** 方法说明：弹出一个dialog，展示一条 message
      *  create by liuxiong at 2019/4/28 0028 20:40
      */
     public static void showDialog(final Activity activity, String message,DialogInterface.OnClickListener positiveListener){
 
         showDialog(activity,message,null,null,positiveListener);
     }
-    /** 方法说明：弹出一个dialog
+
+    /** 方法说明：弹出一个dialog，展示一条 message
      *  create by liuxiong at 2019/4/28 0028 20:40
      */
     public static void showDialog(final Activity activity, String message,String negativeButtonText ,String positiveButtonText,
