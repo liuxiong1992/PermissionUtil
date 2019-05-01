@@ -6,6 +6,15 @@
 
 [https://blog.csdn.net/liu_xiong/article/details/89711470](https://blog.csdn.net/liu_xiong/article/details/89711470 "csdn地址")
 
+## 2、效果 ##
+申请时拒绝，拒绝后会回调被拒绝的权限，可以对被拒绝的权限进行说明，并重新申请。
+
+![](https://img-blog.csdnimg.cn/20190501115628756.gif)
+
+申请时权限被拒绝，并勾选了不再询问，可以请求用户去设置里面打开。
+
+![](https://img-blog.csdnimg.cn/20190501115925903.gif)
+
 ## 2、gradle 配置  ##
 	
 project的build.gradle
@@ -196,7 +205,8 @@ app的build.gradle
             });
 	}
 
-## 5、版本更新说明 ##
+## 5、效果 ##
+
 
 ### version 1.1 ###
 
