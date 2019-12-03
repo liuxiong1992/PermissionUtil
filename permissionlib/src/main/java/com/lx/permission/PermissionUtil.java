@@ -16,6 +16,7 @@ import android.util.Log;
 public class  PermissionUtil {
     private static String TAG="----"+PermissionUtil.class.getSimpleName();
     private static FailedCallBack failedCallBack;
+    private static SuccessCallback successCallback;
 
     private static  String[] permissions;
 
@@ -70,17 +71,21 @@ public class  PermissionUtil {
         }
         if(callback==null){
             Log.d(TAG,"PermissionCallback 为空");
+
+        }else if(callback instanceof SuccessCallback){
+                successCallback= (SuccessCallback) callback;
         }
 
         /** 如果传入的callback 是 SuccessCallback，那么需要一个PermissionCallback代理一下回调*/
         PermissionCallback callback02=null;
         if(callback instanceof SuccessCallback){
             Log.d(TAG,"callback is SuccessCallback");
+
             callback02=new PermissionCallback() {
                 @Override
                 public void onPermissionGranted() {
                     if(callback!=null){
-                        callback.onPermissionGranted();
+                        successCallback.onPermissionGranted();
                     }
                 }
 

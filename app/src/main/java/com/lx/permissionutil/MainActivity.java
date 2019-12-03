@@ -114,13 +114,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //申请权限
-                PermissionUtil.request(MainActivity.this, permission, new SuccessCallback(){
+                final SuccessCallback successCallback=new SuccessCallback(){
 
                     @Override
                     public void onPermissionGranted() {
                         toast("权限申请成功--方式2");
                     }
-                });
+                };
+
+                PermissionUtil.request(MainActivity.this, permission,successCallback );
 
                 /**  申请失败的回调，整个app只需设置一次，统一在一个地方处理 */
                 PermissionUtil.setFailedCallBack(new FailedCallBack() {
@@ -148,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
                                     public void onClick(DialogInterface dialog, int which) {
                                         dialog.dismiss();
                                         //重新申请权限
-                                        PermissionUtil.requestAgain(MainActivity.this,callback);
+                                        PermissionUtil.requestAgain(MainActivity.this,null);
                                     }
                                 });
                     }
