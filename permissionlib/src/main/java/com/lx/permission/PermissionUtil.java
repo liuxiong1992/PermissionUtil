@@ -29,11 +29,21 @@ public class  PermissionUtil {
 
         PermissionCallback callback02 = checkArguments(context, permissions, callback);
         
-        PermissionActivity.request(context.getApplicationContext(), permissions, callback02==null
-                        ?callback:callback02,false);
+        PermissionActivity.request(context.getApplicationContext(), permissions,callback02,false);
     }
 
-    /** 方法说明：用户说明后重新申请
+    /** 方法说明：用户说明后重新申请(用于统一处理失败回调)
+     *  @param context 应用上下文
+     *  create by liuxiong at 2019/4/28 0028 20:40
+     */
+    public static void requestAgain(Context context){
+        //检验参数
+        PermissionCallback callback = checkArguments(context, permissions, null);
+        //启动一个activity申请权限
+        PermissionActivity.request(context.getApplicationContext(), permissions, callback,true);
+    }
+
+    /** 方法说明：用户说明后重新申请(用于单独处理失败回调)
      *  @param context 应用上下文
      *  create by liuxiong at 2019/4/28 0028 20:40
      */
@@ -41,9 +51,9 @@ public class  PermissionUtil {
         //检验参数
         PermissionCallback callback02 = checkArguments(context, permissions, callback);
         //启动一个activity申请权限
-        PermissionActivity.request(context.getApplicationContext(), permissions, callback02==null
-                ?callback:callback02,true);
+        PermissionActivity.request(context.getApplicationContext(), permissions, callback02,true);
     }
+
     /** 方法说明：用户说明后重新申请
      *  @param context 应用上下文
      *  create by liuxiong at 2019/4/28 0028 20:40
@@ -53,8 +63,7 @@ public class  PermissionUtil {
         //检验参数
         PermissionCallback callback02 = checkArguments(context, permissions, callback);
         //启动一个activity申请权限
-        PermissionActivity.request(context.getApplicationContext(), permissions, callback02==null
-                ?callback:callback02,true);
+        PermissionActivity.request(context.getApplicationContext(), permissions, callback02,true);
     }
 
     /**
@@ -62,29 +71,31 @@ public class  PermissionUtil {
     * created by liuxiong on 2019/4/29 14:41
     */
     private static PermissionCallback checkArguments(Context context, String[] permissions,
-                                                     final PermissionCallback callback) {
+                                                     PermissionCallback callback) {
         if(context==null){
             throw new IllegalArgumentException("context 不能为空");
         }
         if(permissions==null){
             throw new IllegalArgumentException("permissions 不能为空");
         }
-        if(callback==null){
-            Log.d(TAG,"PermissionCallback 为空");
-
-        }else if(callback instanceof SuccessCallback){
-                successCallback= (SuccessCallback) callback;
+        if(callback==null&&successCallback!=null){
+            callback=successCallback;
         }
 
-        /** 如果传入的callback 是 SuccessCallback，那么需要一个PermissionCallback代理一下回调*/
-        PermissionCallback callback02=null;
+        if(callback==null){
+            throw new IllegalArgumentException("PermissionCallback 不能为空");
+        }
+
         if(callback instanceof SuccessCallback){
+            successCallback= (SuccessCallback) callback;
+
             Log.d(TAG,"callback is SuccessCallback");
 
-            callback02=new PermissionCallback() {
+            /** 如果传入的callback 是 SuccessCallback，那么需要一个PermissionCallback代理一下回调*/
+            PermissionCallback callback02=new PermissionCallback() {
                 @Override
                 public void onPermissionGranted() {
-                    if(callback!=null){
+                    if(successCallback!=null){
                         successCallback.onPermissionGranted();
                     }
                 }
@@ -107,8 +118,10 @@ public class  PermissionUtil {
                     }
                 }
             };
+            return callback02;
+        }else{
+            return callback;
         }
-        return callback02;
     }
 
 

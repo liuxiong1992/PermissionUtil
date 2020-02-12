@@ -149,8 +149,9 @@ public class MainActivity extends AppCompatActivity {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         dialog.dismiss();
+
                                         //重新申请权限
-                                        PermissionUtil.requestAgain(MainActivity.this,null);
+                                        PermissionUtil.requestAgain(MainActivity.this);
                                     }
                                 });
                     }
