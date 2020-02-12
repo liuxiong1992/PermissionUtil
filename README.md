@@ -211,6 +211,7 @@ app的build.gradle
 ### version 1.1 ###
 
 弃用PermissionUtil类的requestAgain(Context context,String[] permissions,PermissionCallback callback)方法，用requestAgain(Context context,PermissionCallback callback)替代，以方便统一处理回调结果时方便调用。
-### version 1.1 ###
+
+### version 1.2 ###
 解决统一回调方式重新申请没有成功回调的bug，添加PermissionUtil.requestAgain的重载方法requestAgain（Context context）
     
