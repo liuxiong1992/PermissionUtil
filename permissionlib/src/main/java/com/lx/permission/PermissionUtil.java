@@ -29,7 +29,6 @@ public class  PermissionUtil {
             startPermissionActivity(context);
         }
     }
-
     /**
      * 方法说明:  启动申请权限的activity（全透明的activity）
      * created by liuxiong on 2019/4/29 11:50
@@ -87,7 +86,6 @@ public class  PermissionUtil {
             //加入到队列
             queue.add(requestBean);
         }
-
     }
 
 
