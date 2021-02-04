@@ -7,7 +7,7 @@ package com.lx.permission;
 public abstract class SuccessCallback implements PermissionCallback{
 
     @Override
-    public void shouldShowRational(String[] rationalPermissons, boolean before) {
+    public void shouldShowRational(RequestBean requestBean,String[] rationalPermissons, boolean before) {
 
     }
 

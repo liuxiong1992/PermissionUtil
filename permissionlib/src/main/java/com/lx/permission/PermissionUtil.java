@@ -6,8 +6,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.provider.Settings;
-import android.support.v7.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 import android.util.Log;
+import android.widget.Toast;
 
 /**
  * 类说明：权限工具类
@@ -16,99 +17,77 @@ import android.util.Log;
 public class  PermissionUtil {
     private static String TAG="----"+PermissionUtil.class.getSimpleName();
     private static FailedCallBack failedCallBack;
-    private static SuccessCallback successCallback;
 
-    private static  String[] permissions;
+    static RequestQueue queue=new RequestQueue();
 
-    /** 方法说明：申请权限
-     *  @param context 应用上下文
-     *  create by liuxiong at 2019/4/28 0028 20:40
-     */
-    public static void request(Context context, String[] permissions, final PermissionCallback callback){
-        PermissionUtil.permissions=permissions;
-
-        PermissionCallback callback02 = checkArguments(context, permissions, callback);
-        
-        PermissionActivity.request(context.getApplicationContext(), permissions, callback02==null
-                        ?callback:callback02,false);
-    }
-
-    /** 方法说明：用户说明后重新申请
-     *  @param context 应用上下文
-     *  create by liuxiong at 2019/4/28 0028 20:40
-     */
-    public static void requestAgain(Context context,PermissionCallback callback){
-        //检验参数
-        PermissionCallback callback02 = checkArguments(context, permissions, callback);
-        //启动一个activity申请权限
-        PermissionActivity.request(context.getApplicationContext(), permissions, callback02==null
-                ?callback:callback02,true);
-    }
-    /** 方法说明：用户说明后重新申请
-     *  @param context 应用上下文
-     *  create by liuxiong at 2019/4/28 0028 20:40
-     */
-    @Deprecated
-    public static void requestAgain(Context context, String[] permissions,PermissionCallback callback){
-        //检验参数
-        PermissionCallback callback02 = checkArguments(context, permissions, callback);
-        //启动一个activity申请权限
-        PermissionActivity.request(context.getApplicationContext(), permissions, callback02==null
-                ?callback:callback02,true);
+    static void setComplete(Context context){
+        queue.firstNode= queue.firstNode.nextNode;
+        if(queue.firstNode!=null&&context!=null){
+            //Toast.makeText(context,"请求下一个",Toast.LENGTH_SHORT).show();
+            Log.d(TAG,"请求下一个");
+            //请求权限
+            startPermissionActivity(context);
+        }
     }
 
     /**
-    * 方法说明:  检查参数
-    * created by liuxiong on 2019/4/29 14:41
-    */
-    private static PermissionCallback checkArguments(Context context, String[] permissions,
-                                                     final PermissionCallback callback) {
-        if(context==null){
-            throw new IllegalArgumentException("context 不能为空");
+     * 方法说明:  启动申请权限的activity（全透明的activity）
+     * created by liuxiong on 2019/4/29 11:50
+     */
+    private static void startPermissionActivity(Context context) {
+        Intent intent = new Intent(context, PermissionActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+        Log.d(TAG,"startActivity");
+    }
+
+
+    /** 方法说明：申请权限，用于统一处理失败结果，需要设置一次 Failcallback
+     *  @param context 应用上下文
+     *  @param permissions 请求的权限列表
+     *  @param successCallback 请求成功的回调
+     *  create by liuxiong at 2019/4/28 0028 20:40
+     */
+    public static void request(Context context, String[] permissions, SuccessCallback successCallback){
+        RequestBean requestBean=new RequestBean(permissions,failedCallBack,successCallback);
+        request(context, requestBean);
+    }
+
+    /** 方法说明：申请权限，用于单独处理失败结果
+     *  @param context 应用上下文
+     *  @param permissions 请求的权限列表
+     *  @param callback 请求结果的回调
+     *  create by liuxiong at 2019/4/28 0028 20:40
+     */
+    public static void request(Context context, String[] permissions,PermissionCallback callback){
+        RequestBean requestBean=new RequestBean(permissions,callback);
+        request(context, requestBean);
+    }
+
+    /**
+     * 方法说明：再次申请权限
+     * create by liuxiong at 2021/2/3 16:07.
+     */
+    public static void requestAgain(Context context, RequestBean requestBean){
+        requestBean.setAgain(true);
+        request(context, requestBean);
+    }
+
+    /**
+     * 方法说明：申请权限
+     * @param requestBean 请求的requestBean，里面封装了一次请求需要的参数
+     * create by liuxiong at 2021/2/3 15:12.
+     */
+    private static void request(Context context, RequestBean requestBean) {
+        if(queue.firstNode==null){
+            //加入到队列并请求权限
+            queue.add(requestBean);
+            startPermissionActivity(context);
+        }else{
+            //加入到队列
+            queue.add(requestBean);
         }
-        if(permissions==null){
-            throw new IllegalArgumentException("permissions 不能为空");
-        }
-        if(callback==null){
-            Log.d(TAG,"PermissionCallback 为空");
 
-        }else if(callback instanceof SuccessCallback){
-                successCallback= (SuccessCallback) callback;
-        }
-
-        /** 如果传入的callback 是 SuccessCallback，那么需要一个PermissionCallback代理一下回调*/
-        PermissionCallback callback02=null;
-        if(callback instanceof SuccessCallback){
-            Log.d(TAG,"callback is SuccessCallback");
-
-            callback02=new PermissionCallback() {
-                @Override
-                public void onPermissionGranted() {
-                    if(callback!=null){
-                        successCallback.onPermissionGranted();
-                    }
-                }
-
-                @Override
-                public void shouldShowRational(String[] rationalPermissons, boolean before) {
-                    if(failedCallBack!=null){
-                        failedCallBack.shouldShowRational(rationalPermissons,before);
-                    }else{
-                        Log.d(TAG,"没有设置权限申请失败的回调");
-                    }
-                }
-
-                @Override
-                public void onPermissonReject(String[] rejectPermissons) {
-                    if(failedCallBack!=null){
-                        failedCallBack.onPermissonReject(rejectPermissons);
-                    }else{
-                        Log.d(TAG,"没有设置权限申请失败的回调");
-                    }
-                }
-            };
-        }
-        return callback02;
     }
 
 
