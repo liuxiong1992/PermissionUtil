@@ -5,10 +5,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.Settings;
 import androidx.appcompat.app.AlertDialog;
 import android.util.Log;
-import android.widget.Toast;
 
 /**
  * 类说明：权限工具类
@@ -68,6 +68,9 @@ public class  PermissionUtil {
      * create by liuxiong at 2021/2/3 16:07.
      */
     public static void requestAgain(Context context, RequestBean requestBean){
+        if(requestBean==null){
+            throw new IllegalArgumentException("requestBean 不能为null");
+        }
         requestBean.setAgain(true);
         request(context, requestBean);
     }
@@ -78,13 +81,18 @@ public class  PermissionUtil {
      * create by liuxiong at 2021/2/3 15:12.
      */
     private static void request(Context context, RequestBean requestBean) {
-        if(queue.firstNode==null){
-            //加入到队列并请求权限
-            queue.add(requestBean);
-            startPermissionActivity(context);
+        if(Build.VERSION.SDK_INT >=23){
+            if(queue.firstNode==null){
+                //加入到队列并请求权限
+                queue.add(requestBean);
+                startPermissionActivity(context);
+            }else{
+                //加入到队列
+                queue.add(requestBean);
+            }
         }else{
-            //加入到队列
-            queue.add(requestBean);
+            //不需要申请权限，直接回调请求成功,不需要加入队列
+            requestBean.getCallBack().onPermissionGranted();
         }
     }
 

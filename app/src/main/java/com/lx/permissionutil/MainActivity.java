@@ -3,6 +3,7 @@ package com.lx.permissionutil;
 import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
@@ -132,8 +133,9 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.text_view01).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 //申请权限
-                PermissionUtil.request(MainActivity.this,permission,callback);
+                PermissionUtil.request(getApplicationContext(),permission,callback);
             }
         });
 
