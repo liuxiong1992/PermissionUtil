@@ -254,8 +254,10 @@ app的build.gradle
 ### version 1.3 ###
 解决统一回调方式重新申请没有成功回调的bug，添加PermissionUtil.requestAgain的重载方法requestAgain（Context context）
     
-
 ### version 1.4 ###
+出现问题，已删除
+
+### version 1.5 ###
 1. 增加请求队列，同时发起多个权限请求会按顺序一个一个处理，解决多个请求回调发生冲突的问题；
 2. 修改了PermissionUtil类的request、requestAgain方法，使用时需要修改；
 3. 回调方法增加一个参数RequestBean，里面保存了上一次请求的参数，可以在requestAgain方法传入再次发起请求；
