@@ -36,7 +36,7 @@ project的build.gradle
 app的build.gradle
 
 	dependencies {
-			implementation 'com.github.liuxiong1992:PermissionUtil:1.4'
+			implementation 'com.github.liuxiong1992:PermissionUtil:1.5'
 	}
 
 
